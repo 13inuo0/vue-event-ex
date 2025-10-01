@@ -13,10 +13,15 @@
     </ul>
     <!-- 완료된 할 일 목록 -->
     <h2>✅완료</h2>
-     <ul v-for="todo in todos" :key="todo.id">
+    <ul v-for="todo in todos" :key="todo.id">
       <!-- key는 고유한 것을 넣는것을 추천 -->
-      <li v-if="todo.isComplete"><input type="checkbox" @change="toggleComplete(todo)" />{{ todo.name }}</li>
+      <li v-if="todo.isComplete">
+        <input type="checkbox" checked @change="toggleComplete(todo)" />
+        <del>{{ todo.name }}</del>
+      </li>
     </ul>
+    <!-- 완료된 목록 삭제 버튼 -->
+    <button class="delet-btn" @click="deleteCompleted">완료된 할 일 삭제</button>
   </div>
 </template>
 <script setup>
@@ -30,12 +35,22 @@ const todos = ref([
 ]);
 // 할 일 추가
 const newTodo = ref("");
-const addTodo = () => {};
+const addTodo = () => {
+  if (newTodo.value.trim()) {
+    todos.value.push({ id: Date.now(), name: newTodo.value, isComplete: false });
+    newTodo.value = ""; //입력필드 초기화
+  } else {
+    return alert("할 일을 작성하세요");
+  }
+};
 // 할 일 완료 / 미 완료 토글
-const toggleComplete = (todo)=>{
-    // console.log(todo);
-    todo.isComplete = !todo.isComplete
-    
-}
+const toggleComplete = (todo) => {
+  // console.log(todo);
+  todo.isComplete = !todo.isComplete;
+};
+// 완료된 항목 삭제 기능
+const deleteCompleted = () => {
+  todos.value = todos.value.filter((todo) => !todo.isComplete);
+};
 </script>
 <style scoped></style>
